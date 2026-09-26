@@ -44,7 +44,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ 
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 10 * 1024 * 1024 }, // Aumentado para 10MB para aceitar fotos de alta qualidade
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -60,21 +60,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const defaultStoreData = {
-    account: {
-        name: "DragonGod_BR",
-        price: "7K CPS",
-        bp: "585+",
-        server: "Storm / Myth",
-        reborn: "2x Reborn",
-        whatsapp: "5511920065761",
-        description: "Conta extremamente forte com itens de elite, alta BP e status máximos pronta para qualquer Guild War.",
-        mainBanner: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
-        gallery: [
-            "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop"
-        ]
-    },
+    storeName: "CONQUER MARKET",
+    whatsapp: "5511920065761",
+    accounts: [
+        {
+            id: "1",
+            name: "DragonGod_BR",
+            classType: "Trojan",
+            price: "7K CPS",
+            bp: "585+",
+            server: "Storm / Myth",
+            reborn: "2x Reborn",
+            description: "Conta extremamente forte com itens de elite, alta BP e status máximos pronta para qualquer Guild War.",
+            mainBanner: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
+            gallery: [
+                "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop"
+            ]
+        }
+    ],
     reviews: [
         { id: 1, author: "ShadowNinja", rating: 5, comment: "Conta sensacional! Veio com todos os equipamentos descritos e o vendedor transferiu o email super rápido.", date: "Ontem" },
         { id: 2, author: "FireTrojan", rating: 5, comment: "Recomendo demais! Negociação 100% segura e limpa.", date: "Há 3 dias" }
@@ -87,8 +90,11 @@ async function getStoreDataFromSupabase() {
         const rows = await sql`SELECT data FROM store_settings WHERE id = 1`;
         if (rows && rows.length > 0 && rows[0].data) {
             let parsed = rows[0].data;
-            if (parsed.account && !parsed.account.whatsapp) {
-                parsed.account.whatsapp = "5511920065761";
+            if (!parsed.accounts) {
+                parsed.accounts = defaultStoreData.accounts;
+            }
+            if (!parsed.whatsapp) {
+                parsed.whatsapp = "5511920065761";
             }
             return parsed;
         }
@@ -120,55 +126,99 @@ app.get('/api/data', async (req, res) => {
 // Admin Authentication Route
 app.post('/api/admin/login', (req, res) => {
     const { password } = req.body;
-    if (password === 'admin123') {
+    if (password === '2332') {
         res.json({ success: true, token: 'admin-auth-token-secure' });
     } else {
         res.status(401).json({ success: false, message: 'Senha incorreta!' });
     }
 });
 
-// Update Account Details & Handle Uploads
-app.post('/api/admin/update', upload.fields([
-    { name: 'mainBannerFile', maxCount: 1 },
-    { name: 'galleryFiles', maxCount: 10 }
-]), async (req, res) => {
+// Save Store Global Settings (Nome da Loja e WhatsApp)
+app.post('/api/admin/settings', async (req, res) => {
     try {
         const store = await getStoreDataFromSupabase();
-        const { name, price, bp, server, reborn, whatsapp, description, existingGallery } = req.body;
+        const { storeName, whatsapp } = req.body;
+        if (storeName !== undefined) store.storeName = storeName;
+        if (whatsapp !== undefined) store.whatsapp = whatsapp;
 
-        if (name !== undefined) store.account.name = name;
-        if (price !== undefined) store.account.price = price;
-        if (bp !== undefined) store.account.bp = bp;
-        if (server !== undefined) store.account.server = server;
-        if (reborn !== undefined) store.account.reborn = reborn;
-        if (whatsapp !== undefined) store.account.whatsapp = whatsapp;
-        if (description !== undefined) store.account.description = description;
+        await saveStoreDataToSupabase(store);
+        res.json({ success: true, data: store });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Erro ao salvar configurações.' });
+    }
+});
 
-        // Handle main banner upload if provided
-        if (req.files && req.files['mainBannerFile'] && req.files['mainBannerFile'][0]) {
-            store.account.mainBanner = `/uploads/${req.files['mainBannerFile'][0].filename}`;
+// Save / Update Specific Account (Painel Admin) com suporte a upload de múltiplas imagens
+app.post('/api/admin/account/save', upload.any(), async (req, res) => {
+    try {
+        const store = await getStoreDataFromSupabase();
+        const { index, name, classType, price, bp, server, reborn, description } = req.body;
+
+        // Recolher imagens enviadas por upload
+        const files = req.files || [];
+        let mainBannerUrl = null;
+        let newGalleryUrls = [];
+
+        files.forEach(file => {
+            const fileUrl = `/uploads/${file.filename}`;
+            if (file.fieldname === 'mainBannerFile') {
+                mainBannerUrl = fileUrl;
+            } else if (file.fieldname === 'galleryFiles') {
+                newGalleryUrls.push(fileUrl);
+            }
+        });
+
+        // Tratar galeria existente mantida pelo admin
+        let existingGallery = req.body.existingGallery || [];
+        if (typeof existingGallery === 'string') {
+            existingGallery = [existingGallery];
         }
 
-        // Handle gallery images
-        let updatedGallery = [];
-        if (existingGallery) {
-            updatedGallery = Array.isArray(existingGallery) ? existingGallery : [existingGallery];
-        }
+        const finalGallery = [...existingGallery, ...newGalleryUrls];
 
-        if (req.files && req.files['galleryFiles']) {
-            const newUploadedFiles = req.files['galleryFiles'].map(file => `/uploads/${file.filename}`);
-            updatedGallery = updatedGallery.concat(newUploadedFiles);
-        }
+        const accountData = {
+            id: index !== "" && store.accounts[index] ? store.accounts[index].id : String(Date.now()),
+            name,
+            classType: classType || 'Trojan',
+            price,
+            bp,
+            server,
+            reborn,
+            description,
+            mainBanner: mainBannerUrl || (index !== "" && store.accounts[index] ? store.accounts[index].mainBanner : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop'),
+            gallery: finalGallery.length > 0 ? finalGallery : ['https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop']
+        };
 
-        if (updatedGallery.length > 0) {
-            store.account.gallery = updatedGallery;
+        if (index !== "" && !isNaN(index) && store.accounts[Number(index)]) {
+            // Atualizar conta existente
+            store.accounts[Number(index)] = accountData;
+        } else {
+            // Adicionar nova conta no início da lista
+            store.accounts.unshift(accountData);
         }
 
         await saveStoreDataToSupabase(store);
-        res.json({ success: true, message: 'Conta atualizada com sucesso!', data: store });
+        res.json({ success: true, message: 'Conta salva com sucesso!', accounts: store.accounts });
     } catch (err) {
-        console.error(err);
+        console.error("Erro ao salvar conta:", err);
         res.status(500).json({ success: false, message: 'Erro interno no servidor.' });
+    }
+});
+
+// Delete Account Route (Admin)
+app.delete('/api/admin/account/:index', async (req, res) => {
+    try {
+        const index = Number(req.params.index);
+        const store = await getStoreDataFromSupabase();
+        if (store.accounts && store.accounts[index]) {
+            store.accounts.splice(index, 1);
+            await saveStoreDataToSupabase(store);
+        }
+        res.json({ success: true, accounts: store.accounts });
+    } catch (err) {
+        console.error("Erro ao excluir conta:", err);
+        res.status(500).json({ success: false, message: 'Erro ao excluir conta.' });
     }
 });
 
