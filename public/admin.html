@@ -46,10 +46,11 @@
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-12">
+    <!-- Main ajustado para ocupar melhor a tela no PC e virar app-style no mobile -->
+    <main class="w-full max-w-[95%] sm:max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-6 sm:py-12">
         
         <!-- Login Card -->
-        <div id="admin-login-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl max-w-md mx-auto">
+        <div id="admin-login-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl max-w-md mx-auto">
             <h2 class="font-cinzel text-2xl font-bold text-amber-400 mb-2">Acesso Restrito</h2>
             <p class="text-slate-400 text-sm mb-6">Digite a senha de administrador para gerenciar o anúncio e as fotos.</p>
             <form onsubmit="handleLogin(event)" class="space-y-4">
@@ -63,80 +64,47 @@
 
         <!-- Dashboard Panel -->
         <div id="admin-dashboard" class="hidden space-y-8">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            
+            <!-- Configurações Gerais da Loja -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-                    <h2 class="font-cinzel text-2xl font-bold text-white">Editar Dados da Conta & Imagens</h2>
+                    <h2 class="font-cinzel text-xl font-bold text-white">Configurações Gerais</h2>
                     <button onclick="logoutAdmin()" class="text-red-400 text-sm hover:underline"><i class="fa-solid fa-right-from-bracket mr-1"></i> Sair</button>
                 </div>
-
-                <form id="edit-form" onsubmit="saveAccount(event)" class="space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <form onsubmit="saveStoreSettings(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Título / Nome da Conta</label>
-                            <input type="text" id="edit-name" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Preço (Ex: R$ 1.250,00)</label>
-                            <input type="text" id="edit-price" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Battle Power (BP)</label>
-                            <input type="text" id="edit-bp" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Nome da Loja / Site</label>
+                            <input type="text" id="store-name-input" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Servidor</label>
-                            <input type="text" id="edit-server" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Classe / Reborn</label>
-                            <input type="text" id="edit-reborn" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                            <label class="block text-xs font-semibold text-amber-400 mb-1">WhatsApp Geral (Ex: 5511920065761)</label>
+                            <input type="text" id="store-whatsapp-input" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
                         </div>
                     </div>
-
-                    <!-- CAMPO DO WHATSAPP ADICIONADO AQUI -->
-                    <div>
-                        <label class="block text-xs font-semibold text-amber-400 mb-1 uppercase tracking-wider">Número do WhatsApp (Ex: 5511999999999)</label>
-                        <p class="text-xs text-slate-400 mb-2">Digite com o código do país (55) + DDD + Número, sem símbolos ou espaços.</p>
-                        <input type="text" id="edit-whatsapp" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-amber-500" placeholder="5511999999999">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Descrição Completa</label>
-                        <textarea id="edit-desc" rows="3" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white"></textarea>
-                    </div>
-
-                    <!-- Banner File Upload -->
-                    <div class="border-t border-slate-800 pt-6">
-                        <label class="block text-xs font-semibold text-amber-400 mb-1 uppercase tracking-wider">Imagem Principal (Banner do PC)</label>
-                        <p class="text-xs text-slate-400 mb-3">Envie uma nova imagem do seu computador para substituir o banner principal.</p>
-                        <input type="file" id="mainBannerFile" accept="image/*" class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
-                    </div>
-
-                    <!-- Gallery File Uploads -->
-                    <div class="border-t border-slate-800 pt-6">
-                        <label class="block text-xs font-semibold text-amber-400 mb-1 uppercase tracking-wider">Fotos Adicionais da Galeria</label>
-                        <p class="text-xs text-slate-400 mb-3">Selecione uma ou mais imagens do seu computador para adicionar ao carrossel/galeria.</p>
-                        <input type="file" id="galleryFiles" accept="image/*" multiple class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-800 file:text-white hover:file:bg-slate-700 cursor-pointer">
-                        
-                        <div class="mt-4">
-                            <span class="text-xs text-slate-400 block mb-2">Imagens Atuais na Galeria:</span>
-                            <div id="current-gallery-list" class="flex flex-wrap gap-3">
-                                <!-- Existing gallery items injected here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full py-4 rounded-xl bg-conquerRed hover:bg-red-700 font-bold text-white transition text-lg shadow-lg shadow-red-900/40">
-                        Salvar Alterações
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm font-semibold transition text-white">
+                        Salvar Configurações
                     </button>
                 </form>
             </div>
 
+            <!-- Gerenciamento de Contas -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-800 pb-4 gap-4">
+                    <h2 class="font-cinzel text-xl sm:text-2xl font-bold text-white">Gerenciar Contas à Venda</h2>
+                    <button onclick="openNewAccountModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Adicionar Nova Conta</span>
+                    </button>
+                </div>
+
+                <div id="admin-accounts-list" class="space-y-4">
+                    <!-- Lista de contas cadastradas injetada aqui -->
+                </div>
+            </div>
+
             <!-- Reviews Management -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
                 <h3 class="font-cinzel text-xl font-bold text-white mb-4">Gerenciar Avaliações dos Clientes</h3>
                 <div id="admin-reviews-list" class="space-y-3">
                     <!-- Reviews injected here -->
@@ -145,6 +113,88 @@
         </div>
 
     </main>
+
+    <!-- Modal para Adicionar / Editar Conta (Tamanho expandido e responsivo) -->
+    <div id="account-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl relative my-4 sm:my-8 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAccountModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 id="modal-title-account" class="font-cinzel text-xl font-bold text-amber-400 mb-6">Adicionar Nova Conta</h3>
+            
+            <form id="account-form" onsubmit="saveAccountData(event)" class="space-y-6">
+                <input type="hidden" id="edit-acc-id">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Título / Nome da Conta</label>
+                        <input type="text" id="edit-name" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Classe da Conta</label>
+                        <select id="edit-classType" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                            <option value="Trojan">Trojan</option>
+                            <option value="Water">Water</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Warrior">Warrior</option>
+                            <option value="Pirate">Pirate</option>
+                            <option value="Wind">Wind</option>
+                            <option value="DragonWarrior">DragonWarrior</option>
+                            <option value="Ninja">Ninja</option>
+                            <option value="Monk">Monk</option>
+                            <option value="Wender">Wender</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Preço (Ex: R$ 1.250,00)</label>
+                        <input type="text" id="edit-price" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Battle Power (BP)</label>
+                        <input type="text" id="edit-bp" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Servidor</label>
+                        <input type="text" id="edit-server" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Reborn / Detalhes Rápidos</label>
+                    <input type="text" id="edit-reborn" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white" placeholder="Ex: 2x Reborn / Level 140">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Descrição Completa</label>
+                    <textarea id="edit-desc" rows="4" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white"></textarea>
+                </div>
+
+                <!-- Banner File Upload -->
+                <div class="border-t border-slate-800 pt-4">
+                    <label class="block text-xs font-semibold text-amber-400 mb-1 uppercase tracking-wider">Imagem Principal (Banner)</label>
+                    <input type="file" id="mainBannerFile" accept="image/*" class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+                </div>
+
+                <!-- Gallery File Uploads -->
+                <div class="border-t border-slate-800 pt-4">
+                    <label class="block text-xs font-semibold text-amber-400 mb-1 uppercase tracking-wider">Fotos Adicionais da Galeria</label>
+                    <input type="file" id="galleryFiles" accept="image/*" multiple class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-800 file:text-white hover:file:bg-slate-700 cursor-pointer">
+                    
+                    <div class="mt-3">
+                        <span class="text-xs text-slate-400 block mb-2">Imagens Atuais na Galeria:</span>
+                        <div id="current-gallery-list" class="flex flex-wrap gap-3">
+                            <!-- Existing gallery items injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-conquerRed hover:bg-red-700 font-bold text-white transition text-base shadow-lg shadow-red-900/40">
+                    Salvar Conta
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Toast -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 border border-amber-500/50 text-white px-4 py-3 rounded-xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3">
@@ -190,25 +240,53 @@
                 const store = await res.json();
                 currentStoreData = store;
 
-                document.getElementById('edit-name').value = store.account.name;
-                document.getElementById('edit-price').value = store.account.price;
-                document.getElementById('edit-bp').value = store.account.bp;
-                document.getElementById('edit-server').value = store.account.server;
-                document.getElementById('edit-reborn').value = store.account.reborn;
-                document.getElementById('edit-whatsapp').value = store.account.whatsapp || '';
-                document.getElementById('edit-desc').value = store.account.description;
+                document.getElementById('store-name-input').value = store.storeName || '';
+                document.getElementById('store-whatsapp-input').value = store.whatsapp || '';
 
-                renderGalleryManager(store.account.gallery);
-                renderAdminReviews(store.reviews);
+                renderAdminAccounts(store.accounts || []);
+                renderAdminReviews(store.reviews || []);
             } catch (err) {
                 console.error("Erro ao carregar dados admin", err);
             }
         }
 
+        function renderAdminAccounts(accounts) {
+            const container = document.getElementById('admin-accounts-list');
+            container.innerHTML = '';
+
+            if (accounts.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500">Nenhuma conta cadastrada.</p>';
+                return;
+            }
+
+            accounts.forEach((acc, index) => {
+                const item = document.createElement('div');
+                item.className = 'flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-4';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${acc.mainBanner || acc.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e'}" class="w-16 h-16 rounded-lg object-cover border border-slate-700">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded bg-conquerRed text-white text-[10px] font-bold uppercase">${acc.classType || 'Geral'}</span>
+                                <h4 class="font-bold text-white text-sm">${acc.name}</h4>
+                            </div>
+                            <p class="text-amber-400 text-xs font-semibold mt-1">${acc.price} • BP: ${acc.bp} • Servidor: ${acc.server}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button onclick="openEditAccountModal(${index})" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg text-xs font-semibold transition border border-slate-700">Editar</button>
+                        <button onclick="deleteAccount(${index})" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-semibold transition">Excluir</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
         function renderGalleryManager(gallery) {
             const container = document.getElementById('current-gallery-list');
             container.innerHTML = '';
-            gallery.forEach((imgUrl, index) => {
+            if (!gallery) return;
+            gallery.forEach((imgUrl) => {
                 const wrap = document.createElement('div');
                 wrap.className = 'relative w-20 h-20 rounded-lg overflow-hidden border border-slate-700 group';
                 wrap.innerHTML = `
@@ -222,39 +300,69 @@
             });
         }
 
-        function renderAdminReviews(reviews) {
-            const container = document.getElementById('admin-reviews-list');
-            container.innerHTML = '';
-            if (reviews.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-500">Nenhuma avaliação cadastrada.</p>';
-                return;
-            }
-            reviews.forEach(rev => {
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800';
-                item.innerHTML = `
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-white text-sm">${rev.author}</span>
-                            <span class="text-amber-400 text-xs">${'⭐'.repeat(rev.rating)}</span>
-                        </div>
-                        <p class="text-slate-400 text-xs mt-0.5">${rev.comment}</p>
-                    </div>
-                    <button onclick="deleteReview(${rev.id})" class="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-semibold transition">Excluir</button>
-                `;
-                container.appendChild(item);
-            });
+        function openNewAccountModal() {
+            document.getElementById('modal-title-account').textContent = "Adicionar Nova Conta";
+            document.getElementById('edit-acc-id').value = "";
+            document.getElementById('account-form').reset();
+            document.getElementById('current-gallery-list').innerHTML = "";
+            document.getElementById('account-modal').classList.remove('hidden');
         }
 
-        async function saveAccount(e) {
+        function openEditAccountModal(index) {
+            const acc = currentStoreData.accounts[index];
+            document.getElementById('modal-title-account').textContent = "Editar Conta";
+            document.getElementById('edit-acc-id').value = index;
+            document.getElementById('edit-name').value = acc.name || '';
+            document.getElementById('edit-classType').value = acc.classType || 'Trojan';
+            document.getElementById('edit-price').value = acc.price || '';
+            document.getElementById('edit-bp').value = acc.bp || '';
+            document.getElementById('edit-server').value = acc.server || '';
+            document.getElementById('edit-reborn').value = acc.reborn || '';
+            document.getElementById('edit-desc').value = acc.description || '';
+            
+            renderGalleryManager(acc.gallery || []);
+            document.getElementById('account-modal').classList.remove('hidden');
+        }
+
+        function closeAccountModal() {
+            document.getElementById('account-modal').classList.add('hidden');
+        }
+
+        async function saveStoreSettings(e) {
             e.preventDefault();
+            const storeName = document.getElementById('store-name-input').value;
+            const whatsapp = document.getElementById('store-whatsapp-input').value;
+
+            try {
+                const res = await fetch('/api/admin/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ storeName, whatsapp })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Configurações salvas com sucesso!");
+                    loadAdminData();
+                } else {
+                    showToast("Erro ao salvar configurações.");
+                }
+            } catch (err) {
+                showToast("Erro de conexão.");
+            }
+        }
+
+        async function saveAccountData(e) {
+            e.preventDefault();
+            const accIndex = document.getElementById('edit-acc-id').value;
             const formData = new FormData();
+            
+            formData.append('index', accIndex);
             formData.append('name', document.getElementById('edit-name').value);
+            formData.append('classType', document.getElementById('edit-classType').value);
             formData.append('price', document.getElementById('edit-price').value);
             formData.append('bp', document.getElementById('edit-bp').value);
             formData.append('server', document.getElementById('edit-server').value);
             formData.append('reborn', document.getElementById('edit-reborn').value);
-            formData.append('whatsapp', document.getElementById('edit-whatsapp').value);
             formData.append('description', document.getElementById('edit-desc').value);
 
             // Main Banner File
@@ -276,22 +384,59 @@
             }
 
             try {
-                const res = await fetch('/api/admin/update', {
+                const res = await fetch('/api/admin/account/save', {
                     method: 'POST',
                     body: formData
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast("Conta atualizada com sucesso!");
+                    showToast("Conta salva com sucesso!");
+                    closeAccountModal();
                     loadAdminData();
-                    document.getElementById('mainBannerFile').value = '';
-                    document.getElementById('galleryFiles').value = '';
                 } else {
-                    showToast("Erro ao atualizar conta.");
+                    showToast("Erro ao salvar conta.");
                 }
             } catch (err) {
                 showToast("Erro ao salvar alterações.");
             }
+        }
+
+        async function deleteAccount(index) {
+            if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
+            try {
+                const res = await fetch(`/api/admin/account/${index}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    renderAdminAccounts(data.accounts);
+                    showToast("Conta excluída!");
+                }
+            } catch (err) {
+                showToast("Erro ao excluir conta.");
+            }
+        }
+
+        function renderAdminReviews(reviews) {
+            const container = document.getElementById('admin-reviews-list');
+            container.innerHTML = '';
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500">Nenhuma avaliação cadastrada.</p>';
+                return;
+            }
+            reviews.forEach(rev => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800';
+                item.innerHTML = `
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-white text-sm">${rev.author}</span>
+                            <span class="text-amber-400 text-xs">${'⭐'.repeat(rev.rating)}</span>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-0.5">${rev.comment}</p>
+                    </div>
+                    <button onclick="deleteReview(${rev.id})" class="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-semibold transition">Excluir</button>
+                `;
+                container.appendChild(item);
+            });
         }
 
         async function deleteReview(id) {
