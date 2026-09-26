@@ -2,15 +2,20 @@ require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const { createClient } = require('@supabase/supabase-js');
 const postgres = require('postgres');
 
-// ⚙️ Conexão com o Supabase (PostgreSQL via Pooler)
+// ⚙️ Conexão com o Supabase (PostgreSQL para dados)
 const connectionString = process.env.DATABASE_URL;
 const sql = postgres(connectionString, { 
     ssl: 'require',
     family: 4
 });
+
+// ⚙️ Cliente Supabase (para o Storage de ficheiros)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
 
 // Testar conexão ao iniciar
 async function testarConexao() {
@@ -26,25 +31,10 @@ testarConexao();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, 'public', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Multer Storage Setup for Local Image Uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
+// Configuração do Multer usando memória temporária para enviar direto ao Supabase Storage
 const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // Aumentado para 10MB para aceitar fotos de alta qualidade
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -57,7 +47,7 @@ const upload = multer({
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 const defaultStoreData = {
     storeName: "CONQUER MARKET",
@@ -117,6 +107,34 @@ async function saveStoreDataToSupabase(data) {
     }
 }
 
+// Função para enviar imagem para o Supabase Storage
+async function uploadFileToSupabaseStorage(file) {
+    if (!supabase) return null;
+    try {
+        const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+        const { error } = await supabase.storage
+            .from('uploads')
+            .upload(fileName, file.buffer, {
+                contentType: file.mimetype,
+                upsert: true
+            });
+
+        if (error) {
+            console.error("Erro no upload do storage:", error);
+            return null;
+        }
+
+        const { data: publicURLData } = supabase.storage
+            .from('uploads')
+            .getPublicUrl(fileName);
+
+        return publicURLData.publicUrl;
+    } catch (err) {
+        console.error("Erro ao enviar imagem:", err);
+        return null;
+    }
+}
+
 // Get Store Data
 app.get('/api/data', async (req, res) => {
     const data = await getStoreDataFromSupabase();
@@ -149,27 +167,27 @@ app.post('/api/admin/settings', async (req, res) => {
     }
 });
 
-// Save / Update Specific Account (Painel Admin) com suporte a upload de múltiplas imagens
+// Save / Update Specific Account (Painel Admin) com upload direto para o Supabase Storage
 app.post('/api/admin/account/save', upload.any(), async (req, res) => {
     try {
         const store = await getStoreDataFromSupabase();
         const { index, name, classType, price, bp, server, reborn, description } = req.body;
 
-        // Recolher imagens enviadas por upload
         const files = req.files || [];
         let mainBannerUrl = null;
         let newGalleryUrls = [];
 
-        files.forEach(file => {
-            const fileUrl = `/uploads/${file.filename}`;
-            if (file.fieldname === 'mainBannerFile') {
-                mainBannerUrl = fileUrl;
-            } else if (file.fieldname === 'galleryFiles') {
-                newGalleryUrls.push(fileUrl);
+        for (const file of files) {
+            const fileUrl = await uploadFileToSupabaseStorage(file);
+            if (fileUrl) {
+                if (file.fieldname === 'mainBannerFile') {
+                    mainBannerUrl = fileUrl;
+                } else if (file.fieldname === 'galleryFiles') {
+                    newGalleryUrls.push(fileUrl);
+                }
             }
-        });
+        }
 
-        // Tratar galeria existente mantida pelo admin
         let existingGallery = req.body.existingGallery || [];
         if (typeof existingGallery === 'string') {
             existingGallery = [existingGallery];
@@ -191,10 +209,8 @@ app.post('/api/admin/account/save', upload.any(), async (req, res) => {
         };
 
         if (index !== "" && !isNaN(index) && store.accounts[Number(index)]) {
-            // Atualizar conta existente
             store.accounts[Number(index)] = accountData;
         } else {
-            // Adicionar nova conta no início da lista
             store.accounts.unshift(accountData);
         }
 
@@ -256,10 +272,11 @@ app.delete('/api/reviews/:id', async (req, res) => {
         await saveStoreDataToSupabase(store);
         res.json({ success: true, reviews: store.reviews });
     } catch (err) {
+        console.error("Erro ao excluir avaliação:", err);
         res.status(500).json({ success: false, message: 'Erro ao excluir avaliação.' });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Conquer Marketplace rodando na porta ${PORT} com Supabase PostgreSQL!`);
+    console.log(`Conquer Marketplace rodando na porta ${PORT} com Supabase total!`);
 });
