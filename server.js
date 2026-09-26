@@ -17,6 +17,10 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
 
+if (!supabase) {
+    console.error("ATENÇÃO: Credenciais do Supabase Storage não encontradas nas variáveis de ambiente!");
+}
+
 // Testar conexão ao iniciar
 async function testarConexao() {
     try {
@@ -107,11 +111,16 @@ async function saveStoreDataToSupabase(data) {
     }
 }
 
-// Função para enviar imagem para o Supabase Storage
+// Função para enviar imagem para o Supabase Storage com tratamento rigoroso de erros
 async function uploadFileToSupabaseStorage(file) {
-    if (!supabase) return null;
+    if (!supabase) {
+        console.error("Erro: Supabase client não configurado.");
+        return null;
+    }
     try {
-        const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+        const cleanName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}_${cleanName}`;
+        
         const { error } = await supabase.storage
             .from('uploads')
             .upload(fileName, file.buffer, {
@@ -120,7 +129,7 @@ async function uploadFileToSupabaseStorage(file) {
             });
 
         if (error) {
-            console.error("Erro no upload do storage:", error);
+            console.error("Erro detalhado do Supabase Storage:", error.message);
             return null;
         }
 
@@ -130,7 +139,7 @@ async function uploadFileToSupabaseStorage(file) {
 
         return publicURLData.publicUrl;
     } catch (err) {
-        console.error("Erro ao enviar imagem:", err);
+        console.error("Erro crítico ao enviar imagem para o Supabase:", err);
         return null;
     }
 }
@@ -195,8 +204,14 @@ app.post('/api/admin/account/save', upload.any(), async (req, res) => {
 
         const finalGallery = [...existingGallery, ...newGalleryUrls];
 
+        // Recupera dados antigos caso esteja a editar e não tenha enviado nova imagem principal
+        let fallbackBanner = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop';
+        if (index !== "" && !isNaN(index) && store.accounts[Number(index)]) {
+            fallbackBanner = store.accounts[Number(index)].mainBanner;
+        }
+
         const accountData = {
-            id: index !== "" && store.accounts[index] ? store.accounts[index].id : String(Date.now()),
+            id: index !== "" && !isNaN(index) && store.accounts[Number(index)] ? store.accounts[Number(index)].id : String(Date.now()),
             name,
             classType: classType || 'Trojan',
             price,
@@ -204,8 +219,8 @@ app.post('/api/admin/account/save', upload.any(), async (req, res) => {
             server,
             reborn,
             description,
-            mainBanner: mainBannerUrl || (index !== "" && store.accounts[index] ? store.accounts[index].mainBanner : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop'),
-            gallery: finalGallery.length > 0 ? finalGallery : ['https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop']
+            mainBanner: mainBannerUrl || fallbackBanner,
+            gallery: finalGallery.length > 0 ? finalGallery : [fallbackBanner]
         };
 
         if (index !== "" && !isNaN(index) && store.accounts[Number(index)]) {
