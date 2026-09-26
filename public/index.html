@@ -45,117 +45,70 @@
                 <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-conquerRed to-conquerGold flex items-center justify-center glow-box">
                     <i class="fa-solid fa-dragon text-white text-xl"></i>
                 </div>
-                <span class="font-cinzel text-xl sm:text-2xl font-bold tracking-wider text-amber-400 glow-gold">CONQUER MARKET</span>
+                <span id="store-title" class="font-cinzel text-xl sm:text-2xl font-bold tracking-wider text-amber-400 glow-gold">CONQUER MARKET</span>
             </div>
             <div class="flex items-center space-x-4">
-                <a href="#buy-section" class="px-5 py-2 rounded-lg bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 font-cinzel font-bold text-sm tracking-wider uppercase shadow-lg shadow-red-900/30 transition transform hover:scale-105">
-                    Comprar
+                <a id="whatsapp-top-btn" href="https://wa.me/5511920065761?text=Olá,%20gostaria%20de%20suporte!" target="_blank" class="px-5 py-2 rounded-lg bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 font-cinzel font-bold text-sm tracking-wider uppercase shadow-lg shadow-red-900/30 transition transform hover:scale-105">
+                    Suporte WhatsApp
                 </a>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="relative z-10 pt-12 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+    <section class="relative z-10 pt-12 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
         <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs sm:text-sm font-semibold tracking-widest uppercase animate-pulse">
             ⚔️ Oportunidade Única • Servidor Oficial / Privado
         </div>
-        <h1 id="hero-title" class="font-cinzel text-4xl sm:text-6xl font-black tracking-wide text-white mb-6">
-            CONTA TOP DE LINHA À VENDA
+        <h1 class="font-cinzel text-4xl sm:text-6xl font-black tracking-wide text-white mb-4">
+            MERCADO DE CONTAS
         </h1>
-        <p id="hero-desc" class="max-w-2xl mx-auto text-slate-300 text-base sm:text-lg mb-8">
-            Domine o servidor com esta conta extremamente forte, equipada com itens de elite, alta BP e status máximos pronta para qualquer Guild War.
+        <p class="max-w-2xl mx-auto text-slate-300 text-base sm:text-lg mb-8">
+            Escolha a sua classe favorita abaixo e adquira contas extremamente fortes com total segurança e entrega imediata.
         </p>
+
+        <!-- Class Filters Bar (Com todas as classes, incluindo Ninja) -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
+            <button onclick="filterAccounts('All', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-slate-950 transition shadow-md">
+                Todas
+            </button>
+            <button onclick="filterAccounts('Trojan', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Trojan
+            </button>
+            <button onclick="filterAccounts('Water', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Water
+            </button>
+            <button onclick="filterAccounts('Fire', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Fire
+            </button>
+            <button onclick="filterAccounts('Warrior', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Warrior
+            </button>
+            <button onclick="filterAccounts('Pirate', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Pirate
+            </button>
+            <button onclick="filterAccounts('Wind', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Wind
+            </button>
+            <button onclick="filterAccounts('DragonWarrior', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                DragonWarrior
+            </button>
+            <button onclick="filterAccounts('Ninja', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Ninja
+            </button>
+            <button onclick="filterAccounts('Monk', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Monk
+            </button>
+            <button onclick="filterAccounts('Wender', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
+                Wender
+            </button>
+        </div>
     </section>
 
-    <!-- Account Showcase Card -->
+    <!-- Accounts Showcase Grid -->
     <main id="buy-section" class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <!-- Left: Account Gallery & Highlights -->
-            <div class="lg:col-span-7 space-y-6">
-                <!-- Main Banner with Click to Open Modal -->
-                <div class="relative rounded-2xl overflow-hidden border border-slate-700 bg-slate-900/80 shadow-2xl group cursor-pointer" onclick="openImageModal(currentMainBanner)">
-                    <img id="banner-img" src="" alt="Conquer Character" class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
-                    <div class="absolute top-4 right-4 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700 text-xs text-amber-400 backdrop-blur">
-                        <i class="fa-solid fa-expand mr-1"></i> Clique para ampliar
-                    </div>
-                    <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                        <div>
-                            <span id="badge-class" class="px-3 py-1 rounded bg-conquerRed text-white text-xs font-bold uppercase tracking-wider">Top Account</span>
-                            <h2 id="acc-name" class="font-cinzel text-2xl sm:text-3xl font-bold text-white mt-1">Carregando...</h2>
-                        </div>
-                        <div class="bg-slate-900/90 border border-amber-500/40 px-4 py-2 rounded-xl backdrop-blur text-right">
-                            <span class="text-xs text-slate-400 block">Preço</span>
-                            <span id="acc-price" class="font-cinzel text-2xl sm:text-3xl font-bold text-amber-400">R$ --</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Thumbnail Gallery -->
-                <div>
-                    <h3 class="font-cinzel text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Galeria de Imagens (Clique para ver)</h3>
-                    <div id="gallery-thumbnails" class="grid grid-cols-4 gap-3">
-                        <!-- Thumbnails injected dynamically -->
-                    </div>
-                </div>
-
-                <!-- Specs Grid -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
-                        <i class="fa-solid fa-shield-halved text-amber-400 text-xl mb-1"></i>
-                        <span class="block text-xs text-slate-400">Battle Power (BP)</span>
-                        <span id="spec-bp" class="font-bold text-lg text-white">--</span>
-                    </div>
-                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
-                        <i class="fa-solid fa-server text-amber-400 text-xl mb-1"></i>
-                        <span class="block text-xs text-slate-400">Servidor</span>
-                        <span id="spec-server" class="font-bold text-lg text-white">--</span>
-                    </div>
-                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
-                        <i class="fa-solid fa-star text-amber-400 text-xl mb-1"></i>
-                        <span class="block text-xs text-slate-400">Classe / Reborn</span>
-                        <span id="spec-reborn" class="font-bold text-lg text-white">--</span>
-                    </div>
-                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
-                        <i class="fa-solid fa-gem text-amber-400 text-xl mb-1"></i>
-                        <span class="block text-xs text-slate-400">Segurança</span>
-                        <span class="font-bold text-lg text-white">100% Garantido</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Purchase Card -->
-            <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl relative">
-                <div class="absolute -top-3 right-6 bg-amber-500 text-slate-950 font-bold text-xs uppercase px-3 py-1 rounded-full shadow">
-                    Entrega Imediata
-                </div>
-
-                <h3 class="font-cinzel text-xl font-bold text-white mb-4">Sobre o Personagem</h3>
-                <p id="acc-description" class="text-slate-300 text-sm mb-6 leading-relaxed">
-                    Carregando detalhes da conta...
-                </p>
-
-                <ul class="space-y-3 text-slate-300 text-sm mb-8 border-t border-slate-800 pt-6">
-                    <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Equipamentos Super 2 Sockets com Gems refinadas</span></li>
-                    <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Email de recuperação original incluso + Senha transacional</span></li>
-                    <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Suporte direto via WhatsApp com o vendedor</span></li>
-                </ul>
-
-                <div class="space-y-4">
-                    <button onclick="openCheckoutModal()" class="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 font-cinzel font-bold text-lg text-white shadow-lg shadow-emerald-900/40 transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span>Comprar Conta Agora</span>
-                    </button>
-                    
-                    <!-- LUGAR 1: Botão Principal da Página -->
-                    <a id="whatsapp-btn" href="https://wa.me/5511920065761?text=Olá,%20tenho%20interesse%20em%20comprar%20a%20conta%20de%20Conquer%20Online!" target="_blank" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 font-semibold text-sm text-center block transition">
-                        <i class="fa-brands fa-whatsapp text-green-400 mr-2 text-lg"></i> Falar com o Vendedor no WhatsApp
-                    </a>
-                </div>
-            </div>
-
+        <div id="accounts-container" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Cards das contas injetados via JS -->
         </div>
     </main>
 
@@ -219,13 +172,12 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-center">
             <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             <div class="text-center mb-4">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLj1TQ2omXJtM8Rt5POVSRaTyLFBUxcXNn0a4h4Br_SQ&s=10" alt="Vendedor" class="w-24 h-24 rounded-full object-cover border-2 border-emerald-500 mx-auto shadow-md">
-</div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLj1TQ2omXJtM8Rt5POVSRaTyLFBUxcXNn0a4h4Br_SQ&s=10" alt="Vendedor" class="w-24 h-24 rounded-full object-cover border-2 border-emerald-500 mx-auto shadow-md">
+            </div>
             <h3 class="font-cinzel text-xl font-bold text-white mb-2">Finalizar Compra Segura</h3>
-            <p class="text-slate-300 text-sm mb-6">Para concluir a aquisição desta conta de Conquer Online com total segurança, entre em contato direto com o vendedor.</p>
+            <p id="checkout-modal-desc" class="text-slate-300 text-sm mb-6">Para concluir a aquisição desta conta de Conquer Online com total segurança, entre em contato direto com o vendedor.</p>
             
-            <!-- LUGAR 2: Botão do Pop-up de Finalizar Compra -->
-            <a href="https://wa.me/5511920065761?text=Olá,%20quero%20finalizar%20a%20compra%20da%20conta%20de%20Conquer%20Online!" target="_blank" class="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition flex items-center justify-center space-x-2">
+            <a id="whatsapp-buy-btn" href="https://wa.me/5511920065761?text=Olá,%20quero%20finalizar%20a%20compra%20da%20conta!" target="_blank" class="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition flex items-center justify-center space-x-2">
                 <i class="fa-brands fa-whatsapp text-xl"></i>
                 <span>Prosseguir no WhatsApp</span>
             </a>
@@ -239,43 +191,198 @@
     </div>
 
     <script>
-
-        let currentMainBanner = '';
+        let allAccounts = [];
+        let storeWhatsApp = "5511920065761";
+        let currentFilteredAccounts = [];
+        let currentIndex = 0;
 
         async function loadStore() {
             try {
                 const res = await fetch('/api/data');
                 const store = await res.json();
-                renderAccount(store.account);
-                renderReviews(store.reviews);
+                
+                if (store.whatsapp) {
+                    storeWhatsApp = store.whatsapp;
+                    document.getElementById('whatsapp-top-btn').href = `https://wa.me/${storeWhatsApp}?text=Olá,%20gostaria%20de%20suporte!`;
+                }
+                if (store.storeName) {
+                    document.getElementById('store-title').textContent = store.storeName;
+                }
+                if (store.accounts) {
+                    allAccounts = store.accounts;
+                    currentFilteredAccounts = allAccounts;
+                    currentIndex = 0;
+                    renderAccounts(currentFilteredAccounts);
+                }
+                if (store.reviews) {
+                    renderReviews(store.reviews);
+                }
             } catch (err) {
                 console.error("Erro ao carregar dados", err);
             }
         }
 
-        function renderAccount(acc) {
-            currentMainBanner = acc.mainBanner;
-            document.getElementById('banner-img').src = acc.mainBanner;
-            document.getElementById('bg-container').style.backgroundImage = `url('${acc.mainBanner}')`;
-            document.getElementById('acc-name').textContent = acc.name;
-            document.getElementById('acc-price').textContent = acc.price;
-            document.getElementById('spec-bp').textContent = acc.bp;
-            document.getElementById('spec-server').textContent = acc.server;
-            document.getElementById('spec-reborn').textContent = acc.reborn;
-            document.getElementById('acc-description').textContent = acc.description;
+        function renderAccounts(accountsList) {
+            const container = document.getElementById('accounts-container');
+            container.innerHTML = '';
 
-            // Gallery Thumbnails
-            const thumbContainer = document.getElementById('gallery-thumbnails');
-            thumbContainer.innerHTML = '';
+            if (!accountsList || accountsList.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Nenhuma conta cadastrada nesta categoria no momento.</div>`;
+                return;
+            }
+
+            let carouselNavHtml = '';
+            if (accountsList.length > 1) {
+                carouselNavHtml = `
+                    <div class="col-span-full flex items-center justify-between bg-slate-900/80 border border-amber-500/30 px-6 py-3 rounded-2xl mb-6 backdrop-blur shadow-lg">
+                        <button onclick="prevAccount()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 text-amber-400 font-bold text-sm transition flex items-center space-x-2">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            <span>Anterior</span>
+                        </button>
+                        <div class="text-center">
+                            <span class="font-cinzel text-xs uppercase tracking-widest text-slate-400 block">Navegando entre as contas</span>
+                            <span class="text-amber-400 font-bold text-sm">Conta ${currentIndex + 1} de ${accountsList.length}</span>
+                        </div>
+                        <button onclick="nextAccount()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 text-amber-400 font-bold text-sm transition flex items-center space-x-2">
+                            <span>Próxima</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            if (currentIndex >= accountsList.length) {
+                currentIndex = 0;
+            }
+
+            const acc = accountsList[currentIndex];
+            const wrapper = document.createElement('div');
+            wrapper.className = "col-span-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-6 bg-slate-900/40 p-4 sm:p-6 rounded-3xl border border-slate-800/80";
+            
+            let galleryHtml = '';
             if (acc.gallery && acc.gallery.length > 0) {
                 acc.gallery.forEach(imgUrl => {
-                    const thumb = document.createElement('div');
-                    thumb.className = 'relative rounded-lg overflow-hidden border border-slate-700 h-20 cursor-pointer group hover:border-amber-500 transition';
-                    thumb.innerHTML = `<img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition">`;
-                    thumb.onclick = () => openImageModal(imgUrl);
-                    thumbContainer.appendChild(thumb);
+                    galleryHtml += `
+                        <div class="relative rounded-lg overflow-hidden border border-slate-700 h-20 cursor-pointer group hover:border-amber-500 transition" onclick="openImageModal('${imgUrl}')">
+                            <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                        </div>
+                    `;
                 });
             }
+
+            wrapper.innerHTML = `
+                ${carouselNavHtml}
+                <!-- Left: Account Gallery & Highlights -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="relative rounded-2xl overflow-hidden border border-slate-700 bg-slate-900/80 shadow-2xl group cursor-pointer" onclick="openImageModal('${acc.mainBanner || acc.image}')">
+                        <img src="${acc.mainBanner || acc.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e'}" alt="${acc.name}" class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                        <div class="absolute top-4 right-4 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700 text-xs text-amber-400 backdrop-blur">
+                            <i class="fa-solid fa-expand mr-1"></i> Clique para ampliar
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                            <div>
+                                <span class="px-3 py-1 rounded bg-conquerRed text-white text-xs font-bold uppercase tracking-wider">${acc.classType || 'Geral'}</span>
+                                <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-white mt-1">${acc.name}</h2>
+                            </div>
+                            <div class="bg-slate-900/90 border border-amber-500/40 px-4 py-2 rounded-xl backdrop-blur text-right">
+                                <span class="text-xs text-slate-400 block">Preço</span>
+                                <span class="font-cinzel text-xl sm:text-2xl font-bold text-amber-400">${acc.price}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${galleryHtml ? `
+                    <div>
+                        <h3 class="font-cinzel text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Galeria de Imagens (Clique para ver)</h3>
+                        <div class="grid grid-cols-4 gap-3">${galleryHtml}</div>
+                    </div>` : ''}
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
+                            <i class="fa-solid fa-shield-halved text-amber-400 text-xl mb-1"></i>
+                            <span class="block text-xs text-slate-400">Battle Power (BP)</span>
+                            <span class="font-bold text-lg text-white">${acc.bp || 'N/A'}</span>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
+                            <i class="fa-solid fa-server text-amber-400 text-xl mb-1"></i>
+                            <span class="block text-xs text-slate-400">Servidor</span>
+                            <span class="font-bold text-lg text-white">${acc.server || 'Global'}</span>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
+                            <i class="fa-solid fa-star text-amber-400 text-xl mb-1"></i>
+                            <span class="block text-xs text-slate-400">Classe / Reborn</span>
+                            <span class="font-bold text-lg text-white">${acc.reborn || acc.classType || 'N/A'}</span>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center backdrop-blur">
+                            <i class="fa-solid fa-gem text-amber-400 text-xl mb-1"></i>
+                            <span class="block text-xs text-slate-400">Segurança</span>
+                            <span class="font-bold text-lg text-white">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Purchase Card -->
+                <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl relative">
+                    <div class="absolute -top-3 right-6 bg-amber-500 text-slate-950 font-bold text-xs uppercase px-3 py-1 rounded-full shadow">
+                        Entrega Imediata
+                    </div>
+
+                    <h3 class="font-cinzel text-xl font-bold text-white mb-4">Sobre o Personagem</h3>
+                    <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                        ${acc.description || 'Conta forte equipada com itens de elite.'}
+                    </p>
+
+                    <ul class="space-y-3 text-slate-300 text-sm mb-8 border-t border-slate-800 pt-6">
+                        <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Equipamentos Super 2 Sockets com Gems refinadas</span></li>
+                        <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Email de recuperação original incluso + Senha transacional</span></li>
+                        <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Suporte direto via WhatsApp com o vendedor</span></li>
+                    </ul>
+
+                    <div class="space-y-4">
+                        <button onclick="openCheckoutModal('${acc.name}', '${acc.classType || 'Conta'}', '${acc.price}')" class="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 font-cinzel font-bold text-lg text-white shadow-lg shadow-emerald-900/40 transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                           <span>Comprar Conta Agora</span>
+                        </button>
+                        
+                        <a href="https://wa.me/${storeWhatsApp}?text=Olá,%20tenho%20interesse%20em%20comprar%20a%20conta%20[${acc.classType}]%20${acc.name}!" target="_blank" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 font-semibold text-sm text-center block transition">
+                            <i class="fa-brands fa-whatsapp text-green-400 mr-2 text-lg"></i> Falar com o Vendedor no WhatsApp
+                        </a>
+                    </div>
+                </div>
+            `;
+            container.appendChild(wrapper);
+        }
+
+        function nextAccount() {
+            if (currentFilteredAccounts.length > 1) {
+                currentIndex = (currentIndex + 1) % currentFilteredAccounts.length;
+                renderAccounts(currentFilteredAccounts);
+                window.scrollTo({ top: 350, behavior: 'smooth' });
+            }
+        }
+
+        function prevAccount() {
+            if (currentFilteredAccounts.length > 1) {
+                currentIndex = (currentIndex - 1 + currentFilteredAccounts.length) % currentFilteredAccounts.length;
+                renderAccounts(currentFilteredAccounts);
+                window.scrollTo({ top: 350, behavior: 'smooth' });
+            }
+        }
+
+        function filterAccounts(classType, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition";
+            });
+            btnElement.className = "filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-slate-950 transition shadow-md";
+
+            currentIndex = 0;
+            if (classType === 'All') {
+                currentFilteredAccounts = allAccounts;
+            } else {
+                currentFilteredAccounts = allAccounts.filter(acc => acc.classType && acc.classType.toLowerCase() === classType.toLowerCase());
+            }
+            renderAccounts(currentFilteredAccounts);
         }
 
         function renderReviews(reviews) {
@@ -328,7 +435,6 @@
             }
         }
 
-        // Modal Controls
         function openImageModal(url) {
             document.getElementById('modal-img-element').src = url;
             document.getElementById('image-modal').classList.remove('hidden');
@@ -342,7 +448,13 @@
         function closeReviewModal() {
             document.getElementById('review-modal').classList.add('hidden');
         }
-        function openCheckoutModal() {
+        function openCheckoutModal(accName, accClass, accPrice) {
+            const desc = document.getElementById('checkout-modal-desc');
+            const btn = document.getElementById('whatsapp-buy-btn');
+            
+            desc.textContent = `Para concluir a aquisição da conta [${accClass}] ${accName} (${accPrice}) com total segurança, entre em contato direto com o vendedor.`;
+            btn.href = `https://wa.me/${storeWhatsApp}?text=Olá,%20quero%20finalizar%20a%20compra%20da%20conta%20[${accClass}]%20${accName}!`;
+
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
         function closeCheckoutModal() {
@@ -359,9 +471,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', loadStore);
-        
-        // Atualiza os dados automaticamente a cada 5 segundos para refletir mudanças do painel na hora
-        setInterval(loadStore, 5000);
     </script>
 </body>
 </html>
