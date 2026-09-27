@@ -119,7 +119,7 @@ async function uploadFileToSupabaseStorage(file) {
     }
     try {
         const cleanName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}_${cleanName}`;
+        const fileName = `\({Date.now()}-\){Math.round(Math.random() * 1E9)}_${cleanName}`;
         
         const { error } = await supabase.storage
             .from('uploads')
@@ -205,9 +205,9 @@ app.post('/api/admin/account/save', upload.any(), async (req, res) => {
         const finalGallery = [...existingGallery, ...newGalleryUrls];
 
         // Recupera dados antigos caso esteja a editar e não tenha enviado nova imagem principal
-        let fallbackBanner = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop';
+        let fallbackBanner = "";
         if (index !== "" && !isNaN(index) && store.accounts[Number(index)]) {
-            fallbackBanner = store.accounts[Number(index)].mainBanner;
+            fallbackBanner = store.accounts[Number(index)].mainBanner || "";
         }
 
         const accountData = {
@@ -220,7 +220,7 @@ app.post('/api/admin/account/save', upload.any(), async (req, res) => {
             reborn,
             description,
             mainBanner: mainBannerUrl || fallbackBanner,
-            gallery: finalGallery.length > 0 ? finalGallery : [fallbackBanner]
+            gallery: finalGallery.length > 0 ? finalGallery : (fallbackBanner ? [fallbackBanner] : [])
         };
 
         if (index !== "" && !isNaN(index) && store.accounts[Number(index)]) {
