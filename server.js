@@ -119,7 +119,7 @@ async function uploadFileToSupabaseStorage(file) {
     }
     try {
         const cleanName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const fileName = `\({Date.now()}-\){Math.round(Math.random() * 1E9)}_${cleanName}`;
+        const fileName = Date.now() + '_' + Math.round(Math.random() * 1E9) + '_' + cleanName;
         
         const { error } = await supabase.storage
             .from('uploads')
