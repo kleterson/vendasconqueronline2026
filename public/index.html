@@ -55,8 +55,69 @@
         </div>
     </header>
 
+    <!-- BOTÃO FLUTUANTE "BUY CPS" -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <button onclick="toggleCalculator()" class="group flex items-center space-x-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-cinzel font-black px-6 py-4 rounded-full shadow-2xl shadow-amber-500/40 transition-all transform hover:scale-105 border-2 border-amber-300">
+            <i class="fa-solid fa-coins text-xl animate-bounce"></i>
+            <span class="text-base tracking-wider uppercase">Buy Cps</span>
+        </button>
+    </div>
+
+    <!-- JANELA FLUTUANTE DA CALCULADORA (Modal retrátil) -->
+    <div id="calculator-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl p-6 sm:p-8 max-w-4xl w-full shadow-2xl relative overflow-hidden">
+            <!-- Botão Fechar -->
+            <button onclick="toggleCalculator()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-xl bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="absolute -top-3 left-8 bg-amber-500 text-slate-950 font-extrabold text-xs uppercase px-4 py-1 rounded-full shadow-lg tracking-wider">
+                🔥 Calculadora Oficial
+            </div>
+            
+            <div class="text-center mb-6 mt-2">
+                <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-calculator text-amber-400"></i> Calculadora de CPs & Gold
+                </h2>
+                <p class="text-slate-300 text-sm">Simule o valor desejado e adquira instantaneamente via WhatsApp com entrega imediata!</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+                <!-- Seleção de Produto -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">O que deseja comprar?</label>
+                    <select id="tipoProduto" onchange="mudarTipo()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
+                        <option value="cps">CPs (1.000 CPs = R$ 52,00)</option>
+                        <option value="gold">Gold (100kk = R$ 34,00)</option>
+                    </select>
+                </div>
+
+                <!-- Quantidade -->
+                <div class="space-y-1.5">
+                    <label id="labelQuantidade" class="block text-xs font-bold text-slate-300 uppercase tracking-wider" for="quantidade">Quantidade de CPs:</label>
+                    <input type="number" id="quantidade" value="1000" min="1" oninput="calcular()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
+                </div>
+
+                <!-- Caixa de Resultado -->
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-center flex flex-col justify-center">
+                    <span class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Total a Pagar</span>
+                    <div class="font-cinzel text-xl sm:text-2xl font-bold text-amber-400" id="valorTotal">R$ 52,00</div>
+                    <span class="text-xs text-emerald-400 font-semibold" id="detalheItem">1000 CPs</span>
+                </div>
+
+                <!-- Botão WhatsApp -->
+                <div class="flex items-end">
+                    <a id="btnWhatsAppCalc" href="#" target="_blank" class="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition flex items-center justify-center space-x-2 shadow-lg shadow-green-900/30 text-sm">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Comprar via WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="relative z-10 pt-12 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+    <section class="relative z-10 pt-10 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
         <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs sm:text-sm font-semibold tracking-widest uppercase animate-pulse">
             ⚔️ Oportunidade Única • Servidor Oficial / Privado
         </div>
@@ -67,7 +128,7 @@
             Escolha a sua classe favorita abaixo e adquira contas extremamente fortes com total segurança e entrega imediata.
         </p>
 
-        <!-- Class Filters Bar (Com todas as classes, incluindo Ninja) -->
+        <!-- Class Filters Bar -->
         <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
             <button onclick="filterAccounts('All', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-slate-950 transition shadow-md">
                 Todas
@@ -196,6 +257,54 @@
         let currentFilteredAccounts = [];
         let currentIndex = 0;
 
+        // Função para abrir/fechar a calculadora flutuante
+        function toggleCalculator() {
+            const modal = document.getElementById('calculator-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Lógica da Calculadora de CPs & Gold
+        const PRECO_CP = 52.00 / 1000; // R$ 0,052 por CP
+        const PRECO_GOLD = 34.00 / 100;  // R$ 0,34 por 1kk
+
+        function mudarTipo() {
+            const tipo = document.getElementById('tipoProduto').value;
+            const label = document.getElementById('labelQuantidade');
+            const input = document.getElementById('quantidade');
+
+            if (tipo === 'cps') {
+                label.innerText = 'Quantidade de CPs:';
+                input.value = '1000';
+            } else {
+                label.innerText = 'Quantidade de Gold (ex: 100 = 100kk):';
+                input.value = '100';
+            }
+            calcular();
+        }
+
+        function calcular() {
+            const tipo = document.getElementById('tipoProduto').value;
+            const qtd = parseFloat(document.getElementById('quantidade').value) || 0;
+            let total = 0;
+            let textoDetalhe = '';
+
+            if (tipo === 'cps') {
+                total = qtd * PRECO_CP;
+                textoDetalhe = `${qtd} CPs`;
+            } else {
+                total = qtd * PRECO_GOLD;
+                textoDetalhe = `${qtd}kk de Gold`;
+            }
+
+            const totalFormatado = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            document.getElementById('valorTotal').innerText = totalFormatado;
+            document.getElementById('detalheItem').innerText = textoDetalhe;
+
+            const mensagem = encodeURIComponent(`Olá! Gostaria de comprar ${textoDetalhe} pelo valor de ${totalFormatado}.`);
+            document.getElementById('btnWhatsAppCalc').href = `https://wa.me/${storeWhatsApp}?text=${mensagem}`;
+        }
+
         async function loadStore() {
             try {
                 const res = await fetch('/api/data');
@@ -217,8 +326,10 @@
                 if (store.reviews) {
                     renderReviews(store.reviews);
                 }
+                calcular(); 
             } catch (err) {
                 console.error("Erro ao carregar dados", err);
+                calcular();
             }
         }
 
@@ -335,7 +446,7 @@
 
                     <ul class="space-y-3 text-slate-300 text-sm mb-8 border-t border-slate-800 pt-6">
                         <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Equipamentos Super 2 Sockets com Gems refinadas</span></li>
-                        <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Email de recuperação original incluso + Senha transacional</span></li>
+                        <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Email de recuperação original + Senha transacional</span></li>
                         <li class="flex items-center space-x-3"><i class="fa-solid fa-check text-green-400"></i> <span>Suporte direto via WhatsApp com o vendedor</span></li>
                     </ul>
 
