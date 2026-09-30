@@ -25,6 +25,19 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        
+.video-fundo {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+    z-index: -9999 !important;
+    pointer-events: none !important;
+}
+
+
         body { font-family: 'Inter', sans-serif; }
         .font-cinzel { font-family: 'Cinzel', serif; }
         .glow-gold { text-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
@@ -32,11 +45,13 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden">
+    
+    <!-- O vídeo de fundo entra aqui logo no início do body -->
+    <video autoplay muted loop playsinline class="video-fundo">
+        <source src="/videos/fundo.webm" type="video/webm">
+        O seu navegador não suporta vídeos de fundo.
+    </video>
 
-    <!-- Background with Epic Overlay -->
-    <div id="bg-container" class="fixed inset-0 z-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop');">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/60 backdrop-blur-[2px]"></div>
-    </div>
 
     <!-- Navigation Bar -->
     <header class="relative z-10 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
