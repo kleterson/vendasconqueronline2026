@@ -25,19 +25,16 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        
-.video-fundo {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    object-fit: cover !important;
-    z-index: -9999 !important;
-    pointer-events: none !important;
-}
-
-
+        .video-fundo {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            object-fit: cover !important;
+            z-index: -9999 !important;
+            pointer-events: none !important;
+        }
         body { font-family: 'Inter', sans-serif; }
         .font-cinzel { font-family: 'Cinzel', serif; }
         .glow-gold { text-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
@@ -46,12 +43,27 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden">
     
-    <!-- O vídeo de fundo entra aqui logo no início do body -->
+    <!-- Modal de Sucesso de Pagamento -->
+    <div id="success-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-emerald-500/60 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-center space-y-4">
+            <div class="w-16 h-16 bg-emerald-500/20 border border-emerald-500 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-3xl animate-bounce">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="font-cinzel text-2xl font-bold text-white">Pagamento Aprovado!</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+                Pagamento concluído com sucesso, vá até o <strong class="text-amber-400">Poker</strong> e aguarde o trade por favor.
+            </p>
+            <button onclick="fecharModalSucesso()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition shadow-lg shadow-emerald-900/30">
+                Entendido, ir para o jogo
+            </button>
+        </div>
+    </div>
+
+    <!-- O vídeo de fundo -->
     <video autoplay muted loop playsinline class="video-fundo">
         <source src="/videos/fundo.webm" type="video/webm">
         O seu navegador não suporta vídeos de fundo.
     </video>
-
 
     <!-- Navigation Bar -->
     <header class="relative z-10 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
@@ -78,10 +90,9 @@
         </button>
     </div>
 
-    <!-- JANELA FLUTUANTE DA CALCULADORA (Modal retrátil) -->
+    <!-- JANELA FLUTUANTE DA CALCULADORA -->
     <div id="calculator-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all duration-300">
         <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl p-6 sm:p-8 max-w-4xl w-full shadow-2xl relative overflow-hidden">
-            <!-- Botão Fechar -->
             <button onclick="toggleCalculator()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-xl bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -94,39 +105,62 @@
                 <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-calculator text-amber-400"></i> Calculadora de CPs & Gold
                 </h2>
-                <p class="text-slate-300 text-sm">Simule o valor desejado e adquira instantaneamente via WhatsApp com entrega imediata!</p>
+                <p id="calculator-subtitle" class="text-slate-300 text-sm">Simule o valor desejado, informe seu ID e pague instantaneamente via QR Code (PIX)!</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
-                <!-- Seleção de Produto -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">O que deseja comprar?</label>
-                    <select id="tipoProduto" onchange="mudarTipo()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
-                        <option value="cps">CPs (1.000 CPs = R$ 52,00)</option>
-                        <option value="gold">Gold (100kk = R$ 34,00)</option>
-                    </select>
-                </div>
+            <div id="calculator-content">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider" for="accountIdCalc">ID da Conta:</label>
+                        <input type="text" id="accountIdCalc" placeholder="Digite seu ID" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
+                    </div>
 
-                <!-- Quantidade -->
-                <div class="space-y-1.5">
-                    <label id="labelQuantidade" class="block text-xs font-bold text-slate-300 uppercase tracking-wider" for="quantidade">Quantidade de CPs:</label>
-                    <input type="number" id="quantidade" value="1000" min="1" oninput="calcular()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
-                </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">O que deseja?</label>
+                        <select id="tipoProduto" onchange="mudarTipo()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
+                            <option value="cps">CPs (1.000 CPs = R$ 52,00)</option>
+                            <option value="gold">Gold (100kk = R$ 34,00)</option>
+                        </select>
+                    </div>
 
-                <!-- Caixa de Resultado -->
-                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-center flex flex-col justify-center">
-                    <span class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Total a Pagar</span>
-                    <div class="font-cinzel text-xl sm:text-2xl font-bold text-amber-400" id="valorTotal">R$ 52,00</div>
-                    <span class="text-xs text-emerald-400 font-semibold" id="detalheItem">1000 CPs</span>
-                </div>
+                    <div class="space-y-1.5">
+                        <label id="labelQuantidade" class="block text-xs font-bold text-slate-300 uppercase tracking-wider" for="quantidade">Quantidade:</label>
+                        <input type="number" id="quantidade" value="1000" min="1" oninput="calcular()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition text-sm">
+                    </div>
 
-                <!-- Botão WhatsApp -->
-                <div class="flex items-end">
-                    <a id="btnWhatsAppCalc" href="#" target="_blank" class="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition flex items-center justify-center space-x-2 shadow-lg shadow-green-900/30 text-sm">
-                        <i class="fa-brands fa-whatsapp text-lg"></i>
-                        <span>Comprar via WhatsApp</span>
-                    </a>
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-center flex flex-col justify-center">
+                        <span class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Total a Pagar</span>
+                        <div class="font-cinzel text-xl sm:text-2xl font-bold text-amber-400" id="valorTotal">R$ 52,00</div>
+                        <span class="text-xs text-emerald-400 font-semibold" id="detalheItem">1000 CPs</span>
+                    </div>
+
+                    <div class="flex items-end">
+                        <button onclick="gerarQrCodePix()" class="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition flex items-center justify-center space-x-2 shadow-lg shadow-green-900/30 text-sm">
+                            <i class="fa-solid fa-qrcode text-lg"></i>
+                            <span>Pagar via QR Code</span>
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <div id="qrcode-container" class="hidden text-center py-4 space-y-4">
+                <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl max-w-sm mx-auto space-y-3">
+                    <p class="text-xs text-amber-400 font-semibold uppercase tracking-wider">Escaneie o QR Code abaixo</p>
+                    <div class="bg-white p-3 rounded-xl inline-block shadow-md">
+                        <img id="qrCodeImg" src="" alt="QR Code PIX" class="w-44 h-44 mx-auto">
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-xs text-slate-400 block">Conta Vinculada (ID):</span>
+                        <strong id="displayAccountId" class="text-white text-sm bg-slate-900 px-3 py-1 rounded border border-slate-700 inline-block"></strong>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-xs text-slate-400 block">Pix Copia e Cola:</span>
+                        <input type="text" id="pixCopiaECola" readonly value="" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 text-center select-all">
+                    </div>
+                </div>
+                <button onclick="voltarCalculadora()" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition border border-slate-700">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Voltar / Alterar Dados
+                </button>
             </div>
         </div>
     </div>
@@ -145,39 +179,17 @@
 
         <!-- Class Filters Bar -->
         <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
-            <button onclick="filterAccounts('All', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-slate-950 transition shadow-md">
-                Todas
-            </button>
-            <button onclick="filterAccounts('Trojan', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Trojan
-            </button>
-            <button onclick="filterAccounts('Water', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Water
-            </button>
-            <button onclick="filterAccounts('Fire', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Fire
-            </button>
-            <button onclick="filterAccounts('Warrior', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Warrior
-            </button>
-            <button onclick="filterAccounts('Pirate', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Pirate
-            </button>
-            <button onclick="filterAccounts('Wind', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Wind
-            </button>
-            <button onclick="filterAccounts('DragonWarrior', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                DragonWarrior
-            </button>
-            <button onclick="filterAccounts('Ninja', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Ninja
-            </button>
-            <button onclick="filterAccounts('Monk', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Monk
-            </button>
-            <button onclick="filterAccounts('Wender', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">
-                Wender
-            </button>
+            <button onclick="filterAccounts('All', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-slate-950 transition shadow-md">Todas</button>
+            <button onclick="filterAccounts('Trojan', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Trojan</button>
+            <button onclick="filterAccounts('Water', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Water</button>
+            <button onclick="filterAccounts('Fire', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Fire</button>
+            <button onclick="filterAccounts('Warrior', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Warrior</button>
+            <button onclick="filterAccounts('Pirate', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Pirate</button>
+            <button onclick="filterAccounts('Wind', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Wind</button>
+            <button onclick="filterAccounts('DragonWarrior', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">DragonWarrior</button>
+            <button onclick="filterAccounts('Ninja', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Ninja</button>
+            <button onclick="filterAccounts('Monk', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Monk</button>
+            <button onclick="filterAccounts('Wender', this)" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 hover:bg-slate-800 transition">Wender</button>
         </div>
     </section>
 
@@ -200,10 +212,7 @@
                 <span>Avaliar Conta</span>
             </button>
         </div>
-
-        <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Dynamic reviews inserted here -->
-        </div>
+        <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
     </section>
 
     <!-- Image Preview Modal -->
@@ -252,7 +261,6 @@
             </div>
             <h3 class="font-cinzel text-xl font-bold text-white mb-2">Finalizar Compra Segura</h3>
             <p id="checkout-modal-desc" class="text-slate-300 text-sm mb-6">Para concluir a aquisição desta conta de Conquer Online com total segurança, entre em contato direto com o vendedor.</p>
-            
             <a id="whatsapp-buy-btn" href="https://wa.me/5511920065761?text=Olá,%20quero%20finalizar%20a%20compra%20da%20conta!" target="_blank" class="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition flex items-center justify-center space-x-2">
                 <i class="fa-brands fa-whatsapp text-xl"></i>
                 <span>Prosseguir no WhatsApp</span>
@@ -271,16 +279,27 @@
         let storeWhatsApp = "5511920065761";
         let currentFilteredAccounts = [];
         let currentIndex = 0;
+        let pagamentoIntervalId = null;
 
-        // Função para abrir/fechar a calculadora flutuante
         function toggleCalculator() {
             const modal = document.getElementById('calculator-modal');
             modal.classList.toggle('hidden');
+            voltarCalculadora();
         }
 
-        // Lógica da Calculadora de CPs & Gold
-        const PRECO_CP = 52.00 / 1000; // R$ 0,052 por CP
-        const PRECO_GOLD = 34.00 / 100;  // R$ 0,34 por 1kk
+        function mostrarSucessoPagamento() {
+            if (pagamentoIntervalId) clearInterval(pagamentoIntervalId);
+            document.getElementById('calculator-modal').classList.add('hidden');
+            document.getElementById('success-modal').classList.remove('hidden');
+        }
+
+        function fecharModalSucesso() {
+            document.getElementById('success-modal').classList.add('hidden');
+            voltarCalculadora();
+        }
+
+        const PRECO_CP = 52.00 / 1000;
+        const PRECO_GOLD = 34.00 / 100;
 
         function mudarTipo() {
             const tipo = document.getElementById('tipoProduto').value;
@@ -288,10 +307,10 @@
             const input = document.getElementById('quantidade');
 
             if (tipo === 'cps') {
-                label.innerText = 'Quantidade de CPs:';
+                label.innerText = 'Quantidade:';
                 input.value = '1000';
             } else {
-                label.innerText = 'Quantidade de Gold (ex: 100 = 100kk):';
+                label.innerText = 'Quantidade (100 = 100kk):';
                 input.value = '100';
             }
             calcular();
@@ -312,12 +331,120 @@
             }
 
             const totalFormatado = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            
             document.getElementById('valorTotal').innerText = totalFormatado;
             document.getElementById('detalheItem').innerText = textoDetalhe;
+        }
 
-            const mensagem = encodeURIComponent(`Olá! Gostaria de comprar ${textoDetalhe} pelo valor de ${totalFormatado}.`);
-            document.getElementById('btnWhatsAppCalc').href = `https://wa.me/${storeWhatsApp}?text=${mensagem}`;
+        async function gerarQrCodePix() {
+            const accountId = document.getElementById('accountIdCalc').value.trim();
+            if (!accountId) {
+                showToast("Por favor, digite o ID da sua conta!");
+                document.getElementById('accountIdCalc').focus();
+                return;
+            }
+
+            const tipo = document.getElementById('tipoProduto').value;
+            const qtd = parseFloat(document.getElementById('quantidade').value) || 0;
+            
+            try {
+                const resStore = await fetch('/api/data');
+                const storeInfo = await resStore.json();
+
+                if (tipo === 'cps' && qtd > (storeInfo.stockCps || 0)) {
+                    alert(`Estoque insuficiente! Temos apenas ${storeInfo.stockCps || 0} CPs disponíveis no momento.`);
+                    return;
+                }
+                if (tipo === 'gold' && qtd > (storeInfo.stockGold || 0)) {
+                    alert(`Estoque insuficiente! Temos apenas ${storeInfo.stockGold || 0}kk de Gold disponíveis no momento.`);
+                    return;
+                }
+            } catch (e) {
+                console.error("Erro ao validar estoque:", e);
+            }
+
+            let textoDetalhe = tipo === 'cps' ? `${qtd} CPs` : `${qtd}kk de Gold`;
+            const valorTotalNum = tipo === 'cps' ? (qtd * PRECO_CP) : (qtd * PRECO_GOLD);
+            const valorTotalStr = document.getElementById('valorTotal').innerText;
+
+            showToast("A gerar Pix oficial...");
+
+            try {
+                const response = await fetch('/api/criar-pagamento', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        transaction_amount: Number(valorTotalNum.toFixed(2)),
+                        description: `Pagamento para ${textoDetalhe} vinculado ao ID: ${accountId}`,
+                        email: 'cliente@conquermarket.com'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const qrCodeImg = document.getElementById('qrCodeImg');
+                    if (qrCodeImg) {
+                        qrCodeImg.src = `data:image/jpeg;base64,${data.qr_code_base64}`;
+                    }
+
+                    const pixCopiaColaInput = document.getElementById('pixCopiaECola');
+                    if (pixCopiaColaInput) {
+                        pixCopiaColaInput.value = data.qr_code;
+                    }
+
+                    document.getElementById('displayAccountId').innerText = accountId;
+                    document.getElementById('calculator-content').classList.add('hidden');
+                    document.getElementById('qrcode-container').classList.remove('hidden');
+                    document.getElementById('calculator-subtitle').innerText = `Pagamento para ${textoDetalhe} (${valorTotalStr}) vinculado ao ID: ${accountId}`;
+
+                    // Limpa verificação anterior se houver
+                    if (pagamentoIntervalId) clearInterval(pagamentoIntervalId);
+
+                    const paymentId = data.payment_id;
+
+                    // Inicia verificação automática (Pooling) a cada 4 segundos
+                    pagamentoIntervalId = setInterval(async () => {
+                        try {
+                            const checkRes = await fetch(`/api/verificar-pagamento?id=${paymentId}`);
+                            const checkData = await checkRes.json();
+
+                            if (checkData.status === 'approved') {
+                                clearInterval(pagamentoIntervalId);
+
+                                // Regista automaticamente no painel administrativo
+                                await fetch('/api/simular-pagamento', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        accId: accountId,
+                                        itemTitle: textoDetalhe,
+                                        quantity: qtd,
+                                        isGold: (tipo === 'gold')
+                                    })
+                                });
+
+                                mostrarSucessoPagamento();
+                            }
+                        } catch (err) {
+                            console.error("Erro ao verificar status do pagamento:", err);
+                        }
+                    }, 4000);
+
+                } else {
+                    alert("Erro ao gerar Pix no Mercado Pago. Verifique o token de acesso no servidor.");
+                    console.error(data.error);
+                }
+            } catch (error) {
+                console.error("Erro de conexão com o servidor ao gerar Pix:", error);
+                alert("Erro ao comunicar com o servidor.");
+            }
+        }
+
+        function voltarCalculadora() {
+            if (pagamentoIntervalId) clearInterval(pagamentoIntervalId);
+            document.getElementById('qrcode-container').classList.add('hidden');
+            document.getElementById('calculator-content').classList.remove('hidden');
+            document.getElementById('calculator-subtitle').innerText = "Simule o valor desejado, informe seu ID e pague instantaneamente via QR Code (PIX)!";
         }
 
         async function loadStore() {
@@ -398,7 +525,6 @@
 
             wrapper.innerHTML = `
                 ${carouselNavHtml}
-                <!-- Left: Account Gallery & Highlights -->
                 <div class="lg:col-span-7 space-y-6">
                     <div class="relative rounded-2xl overflow-hidden border border-slate-700 bg-slate-900/80 shadow-2xl group cursor-pointer" onclick="openImageModal('${acc.mainBanner || acc.image}')">
                         <img src="${acc.mainBanner || acc.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e'}" alt="${acc.name}" class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition duration-500">
@@ -448,7 +574,6 @@
                     </div>
                 </div>
 
-                <!-- Right: Purchase Card -->
                 <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl relative">
                     <div class="absolute -top-3 right-6 bg-amber-500 text-slate-950 font-bold text-xs uppercase px-3 py-1 rounded-full shadow">
                         Entrega Imediata
